@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+  background-color: #f5f4f4b0;
+}
+
+.btn {
+  @apply bg-[#26DE81] hover:bg-[#0FB8B1] duration-300 text-white py-3 cursor-pointer rounded-md font-semibold;
+}
