@@ -1,5 +1,7 @@
 // react import
 import { useState } from "react";
+// axios import
+import axios from "axios";
 // react hook  form import
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -8,6 +10,7 @@ import { BiHide, BiLockAlt, BiShow } from "react-icons/bi";
 import { FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { HiOutlineMail } from "react-icons/hi";
+// react router import
 import { useNavigate } from "react-router-dom";
 
 function SignIn() {
@@ -15,35 +18,36 @@ function SignIn() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm();
   const [password, setPassword] = useState(true);
 
-  const onSubmit = (data) => {
-    fetch("https://test.directaff.com/api/login", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((res) => res.json())
-      .then((loginData) => {
-        if (loginData?.error === "Unauthorized") {
-          toast.error("User Unauthorized");
-        } else {
-          console.log(loginData?.token, "token");
-          localStorage.setItem("logInToken", loginData?.token);
-          navigate("/");
-          toast("User Login Successfully", {
-            icon: "👏 ",
-          });
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post(
+        "https://test.directaff.com/api/login",
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-        // console.log(loginData);
-      })
-      .catch((err) => console.log("error", err));
-    // console.log(data);
+      );
+      const loginData = response.data;
+      if (loginData?.error === "Unauthorized") {
+        toast.error("User Unauthorized");
+      } else {
+        // console.log(loginData?.token, "token");
+        localStorage.setItem("logInToken", loginData?.token);
+        navigate("/");
+        toast("User Login Successfully", {
+          icon: "👏 ",
+        });
+      }
+    } catch (error) {
+      // console.log(error)
+      toast.error(error?.response?.data?.error);
+    }
   };
 
   return (
@@ -104,7 +108,11 @@ function SignIn() {
                   </div>
                 )}
               </div>
-              <input className="btn w-full mt-5" value="Sign In" type="submit" />
+              <input
+                className="btn w-full mt-5"
+                value="Sign In"
+                type="submit"
+              />
               <div className="mt-5 flex items-center justify-center">
                 <div className="border-b border-gray-400 w-full"></div>
                 <div className="w-full text-center text-xl font-medium text-[#676767]">

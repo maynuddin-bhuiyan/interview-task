@@ -1,9 +1,9 @@
-// react import 
+// react import
 import React, { useState, useEffect } from "react";
 
 const Home = () => {
   // Initialize userData state with null
-  const [userData, setUserData] = useState(null); 
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,19 +17,13 @@ const Home = () => {
         };
 
         try {
-          const response = await fetch(apiUrl, {
-            method: "GET",
+          const response = await axios.get(apiUrl, {
             headers: headers,
           });
 
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-
-          const data = await response.json();
           // Set the data in the state
-          setUserData(data); 
-          console.log("API response:", data);
+          setUserData(response.data);
+          // console.log("API response:", response.data);
         } catch (error) {
           // Handle errors during the API request
           console.error("Error fetching data:", error);
@@ -39,8 +33,8 @@ const Home = () => {
       }
     };
 
-    fetchData(); 
-  }, []); 
+    fetchData();
+  }, []);
 
   return (
     <div className="my-10">
@@ -84,7 +78,7 @@ const Home = () => {
                     Role:
                   </span>{" "}
                   {userData.role}
-                </p>               
+                </p>
               </div>
             )}
           </div>
